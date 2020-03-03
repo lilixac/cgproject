@@ -1,34 +1,63 @@
 let character;
 let obstacles = [];
-// let bg;
+let gameScore = 0;
+let coins = [];
+let animations = [];
 
 
 function setup() {
 	createCanvas(1350, 400);
 	frameRate(50);
 	character = new Character();
-	// bg = loadImage('background.png');
 }
 
 function draw() {
-	background('#7acfd6');
+	background('#111111');
+	// fill("#ffffff");
 	line(20, 380, 1350, 380);
 	line(20, 20, 1350, 20);
-	stroke(25);
-	text("Score: "+ Math.floor(frameCount/5) , 1200, 50);
+	stroke(255);
+	fill("#ffffff")
+	text("Score: "+ Math.floor(frameCount/10) , 1200, 50);
+	console.log(gameScore);
 	textSize(20);
 	
 
-	if(frameCount%30==0 && Math.random()*10<5) {
+	if(frameCount%30==0 && Math.random()*10<4) {
 		obstacles.push(new Obstacle());		
+	}
+
+	if(frameCount%30==0 && Math.random()*10<0.4) {
+		animations.push(new Animation ());		
+	}
+
+	if(frameCount%30==0 && Math.random()*10<1) {
+		coins.push(new Coin());		
+	}
+
+	for (a of animations) {
+		a.display();
+		a.randomPosition();
+	}
+
+	for (c of coins) {
+		c.move();
+		c.display();
+
+		if (character.collidesWithCoin(c)) {
+			fill('#101357');
+			text("Coin collected!", 600, 50);
+			frameCount += 500;
+		}
 	}
 
 	for (let o of obstacles) {
 		o.move();
 		o.display();
+
 		if (character.collidesWith(o)) {
 			noLoop();
-			fill('#101357');
+			fill('#ffffff');
 			text("Game Over", 600, 50);
 			textSize(50);
 			
@@ -39,6 +68,7 @@ function draw() {
 			});
 		}
 	}
+
 	character.display();
 	character.move();
 }
@@ -53,7 +83,7 @@ class Character {
 	constructor() {
 		this.diameter = 40;
 		this.x = 50;
-		this.y = height - this.diameter;
+		this.y = height - this.diameter * 2;
 		this.vy = 0;
 		this.gravity = 2;
 	}
@@ -71,7 +101,7 @@ class Character {
 	}
 
 	display() {
-		fill('#3f3f3f ');
+		fill('#3e50b4');
 		circle(this.x, this.y, this.diameter);
 	}
 
@@ -81,6 +111,18 @@ class Character {
 			obstacle.y,
 			obstacle.obstacleWidth,
 			100,
+			this.x,
+			this.y,
+			this.diameter
+		);
+	}
+
+	collidesWithCoin(coin) {
+		return collideRectCircle(
+			coin.x,
+			coin.y,
+			30,
+			30,
 			this.x,
 			this.y,
 			this.diameter
@@ -102,5 +144,39 @@ class Obstacle {
 	display() {
 		fill('#00c07f');
 		rect(this.x, this.y, this.obstacleWidth, 100);
+	}
+}
+
+
+class Coin {
+	constructor() {
+		this.x = width;
+		this.y = 90;
+	}
+
+	move() {
+		this.x -= 16;
+	}
+
+	display() {
+		fill('#00c07f');
+		rect(this.x, this.y, 30, 30);
+	}
+}
+
+class Animation {
+	constructor() {
+		this.x = width;
+		this.y = height - this.obstacleWidth * 2;
+	}
+
+	display() {
+			fill("#FFD700");
+			circle(this.xPosition, this.yPosition,20);
+	}
+
+	randomPosition() {
+		this.xPosition = Math.floor(Math.random() * 1300);
+		this.yPosition = 40 + Math.floor(Math.random() * 320);
 	}
 }
