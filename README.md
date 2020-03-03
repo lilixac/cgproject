@@ -1,0 +1,3 @@
+This is a lame dinosaur game, but sometimes it is fun to play...
+To run, go to src and open index.html in the browser.
+Or, a fancy way to open it, in the terminal, navigate to the folder and run npm start

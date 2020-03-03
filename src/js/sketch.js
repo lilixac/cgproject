@@ -159,7 +159,7 @@ class Coin {
 	}
 
 	display() {
-		fill('#00c07f');
+		fill('#aaa9ad');
 		rect(this.x, this.y, 30, 30);
 	}
 }
